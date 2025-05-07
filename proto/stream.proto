@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "./proto";
+
+package stream;
+
+service StreamService {
+    rpc StartStream (StartStreamRequest) returns (StartStreamResponse);
+    rpc StopStream (StopStreamRequest) returns (StopStreamResponse);
+    rpc SaveStreamToS3 (SaveStreamToS3Request) returns (SaveStreamToS3Response);
+  }
+  
+  message StartStreamRequest {
+    string user_id = 1;
+    string title = 2;
+    string description = 3;
+  }
+  
+  message StartStreamResponse {
+    string stream_id = 1;
+    string rtmp_url = 2; // RTMP URL
+  }
+  
+  message StopStreamRequest {
+    string stream_id = 1;
+  }
+  
+  message StopStreamResponse {
+    bool success = 1;
+  }
+  
+  message SaveStreamToS3Request {
+    string stream_id = 1;
+  }
+  
+  message SaveStreamToS3Response {
+    string s3_url = 1; // HLS file URL (m3u8)
+  }
