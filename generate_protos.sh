@@ -31,7 +31,29 @@ generate_ts_protos() {
         mkdir -p "./types"
     fi
     # Generate TS Protos
-    npx protoc --ts_proto_out=./types/ ./proto/*.proto --ts_proto_opt=nestJs=true;
+    npx protoc --ts_proto_out=./services/$1/types/ ./proto/$2 --ts_proto_opt=nestJs=true;
+}
+
+generate_python_protos() {
+    if [ ! -d "./services/$1/pb" ]; then
+        mkdir -p "./services/$1/pb"
+    fi
+
+    python -m grpc_tools.protoc \
+        -I $PROTO_DIR \
+        --python_out=./services/$1/pb \
+        --grpc_python_out=./services/$1/pb \
+        $PROTO_DIR/$2
+}
+
+
+generate_gateway_protos() {
+    # Check if the types directory exists, if not create it
+    if [ ! -d "./gateway/types" ]; then
+        mkdir -p "./gateway/types"
+    fi
+    # Generate TS Protos
+    npx protoc --ts_proto_out=./gateway/types/ ./proto/*.proto --ts_proto_opt=nestJs=true;
 }
 
 main() {
@@ -51,11 +73,11 @@ main() {
     echo "🔨 Generating Go protos..."
     generate_go_protos $STREAM_SERVICE $STREAM_SERVICE_PROTO
 
-    # echo "🧩 Generating TypeScript protos (types only)..."
-    # generate_ts_types_only
+    # echo "🚀 Generating TypeScript protos for NestJS..."
+    # generate_ts_protos
 
-    echo "🚀 Generating TypeScript protos for NestJS..."
-    generate_ts_protos
+    echo "🧩 Generating Gateway protos..."
+    generate_gateway_protos
 
     echo -e "\e[1;32mAll proto files are generated\e[0m ✅"
 }
