@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - kafka
+      - stream-service
+      - notification-service
+      - ai-agent
+
+  user-service:
+    build: ./services/user-service
+    container_name: user-service
+    ports:
+      - "3010:3010"
+    depends_on:
+      - kafka
+
+  stream-service:
+    build: ./services/stream-service
+    container_name: stream-service
+    ports:
+      - "3011:3011"
+
+  notification_service:
+    build: ./services/notification-service
+    container_name: notification-service
+    ports:
+      - "3012:3012"
+    depends_on:
+      - kafka
+
+  ai-agent:
+    build: ./services/ai-agent
+    container_name: ai-agent
+    ports:
+      - "3030:3030"
+
+  nginx-rtmp:
+    image: alfg/nginx-rtmp
+    container_name: nginx-rtmp
+    ports:
+      - "1935:1935"   # RTMP portu
+      - "8888:8888"   # HTTP (HLS dosyaları)
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/hls:/tmp/hls
+    restart: always
