@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { ReflectionService } from '@grpc/reflection';
-import { USER_PACKAGE_NAME } from 'types/proto/user';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -11,9 +10,12 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        package: USER_PACKAGE_NAME,
-        protoPath: join(__dirname, 'user.proto'),
-        url: 'localhost:50051',
+        package: 'auth',
+        protoPath: join(
+          // __dirname,
+          '/home/bcila/Documents/Projects/twitch-clone-microservices/proto/auth.proto',
+        ),
+        url: 'localhost:50052',
         onLoadPackageDefinition: (pkg, server) => {
           new ReflectionService(pkg).addToServer(server);
         },
@@ -22,6 +24,6 @@ async function bootstrap() {
   );
 
   await app.listen();
-  console.log('User service is running');
+  console.log('Auth service is running');
 }
 bootstrap();

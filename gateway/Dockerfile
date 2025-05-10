@@ -20,6 +20,7 @@ WORKDIR /app
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/proto ./proto
 
 EXPOSE 3000
 

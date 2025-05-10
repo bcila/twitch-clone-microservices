@@ -2,29 +2,48 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""user"""
 type User {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """User ID"""
+  id: ID!
+
+  """User Name"""
+  username: String!
+
+  """User Email"""
+  email: String!
 }
 
 type Query {
   users: [User!]!
-  user(id: Int!): User!
+  user(id: String!): User!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
+  removeUser(id: String!): User!
 }
 
 input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """username"""
+  username: String!
+
+  """email"""
+  email: String!
+
+  """password"""
+  password: String!
 }
 
 input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  """username"""
+  username: String
+
+  """email"""
+  email: String
+
+  """password"""
+  password: String
+  id: ID!
 }

@@ -6,8 +6,11 @@ COPY . .
 RUN go mod tidy & go build -o stream-service
 
 FROM alpine:latest
+
 WORKDIR /app
+
 COPY --from=builder /app/stream-service .
+COPY --from=builder /app/proto ./proto
 
 EXPOSE 3011
 

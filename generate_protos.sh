@@ -16,6 +16,9 @@ STREAM_SERVICE_PROTO="stream.proto"
 USER_SERVICE="user-service"
 USER_SERVICE_PROTO="user.proto"
 
+AUTH_SERVICE="auth-service"
+AUTH_SERVICE_PROTO="auth.proto"
+
 generate_go_protos() {
     # Check if the service directory exists, if not create it
     if [ ! -d "./services/$1/internal/grpc/pb" ]; then
@@ -44,6 +47,7 @@ generate_ts_protos() {
     if [ -f "$PROTO_DIR/$2" ]; then
         # Generate TS Protos if proto file exists
         npx protoc --ts_proto_out=./services/$1/types/ ./proto/$2 --ts_proto_opt=nestJs=true;
+        cp $PROTO_DIR/$2 ./services/$1/dist/src/$2
     else
         echo "⚠️ Proto file for $1 not found. Skipping generation."
     fi
@@ -104,6 +108,7 @@ main() {
 
     echo "🚀 Generating TypeScript protos for NestJS..."
     generate_ts_protos $USER_SERVICE $USER_SERVICE_PROTO
+    generate_ts_protos $AUTH_SERVICE $AUTH_SERVICE_PROTO
 
     echo "🧩 Generating Gateway protos..."
     generate_gateway_protos
