@@ -6,13 +6,15 @@ import { ReflectionService } from '@grpc/reflection';
 import { USER_PACKAGE_NAME } from 'types/proto/user';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+  const grpcService = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
       transport: Transport.GRPC,
       options: {
         package: USER_PACKAGE_NAME,
-        protoPath: join(__dirname, 'user.proto'),
+        protoPath: join(
+          '/home/bcila/Documents/Projects/twitch-clone-microservices/proto/user.proto',
+        ),
         url: 'localhost:50051',
         onLoadPackageDefinition: (pkg, server) => {
           new ReflectionService(pkg).addToServer(server);
@@ -21,7 +23,22 @@ async function bootstrap() {
     },
   );
 
-  await app.listen();
+  const kafkaService =
+    await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: ['192.168.1.104:9092'],
+        },
+        consumer: {
+          groupId: 'user-consumer',
+        },
+      },
+    });
+
+  await grpcService.listen();
+  await kafkaService.listen();
+
   console.log('User service is running');
 }
 bootstrap();

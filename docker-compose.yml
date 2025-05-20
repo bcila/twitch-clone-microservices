@@ -60,8 +60,8 @@ services:
       - "3030:3030"
 
   nginx-rtmp:
-    image: alfg/nginx-rtmp
-    container_name: nginx-rtmp
+    container_name: nginx-rtmp-server
+    build: ./rtmp-server
     ports:
       - "1935:1935"   # RTMP portu
       - "8888:8888"   # HTTP (HLS dosyaları)
