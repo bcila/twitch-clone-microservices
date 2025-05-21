@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option go_package = "./proto";
+
+package user;
+
+// USER SERVICE
+service UserService {
+    rpc CreateUser (CreateUserRequest) returns (UserResponse);
+    rpc FindUserById (FindUserByIdRequest) returns (UserResponse);
+    rpc FindUserByEmail (FindUserByEmailRequest) returns (UserResponse);
+    rpc FindUserByUsername (FindUserByUsernameRequest) returns (UserResponse);
+}
+
+message CreateUserRequest {
+    string username = 1;
+    string password = 2;
+    string email = 3;
+}
+
+message FindUserByIdRequest {
+    string user_id = 1;
+}
+
+message FindUserByEmailRequest {
+    string email = 1;
+}
+
+message FindUserByUsernameRequest {
+    string username = 1;
+}
+
+message UserResponse {
+    string user_id = 1;
+    string username = 2;
+    string email = 3;
+}
+
+// PROFILE SERVICE
+service ProfileService {
+    rpc CreateProfile (CreateProfileRequest) returns (ProfileResponse);
+    rpc FindProfileById (FindProfileByIdRequest) returns (ProfileResponse);
+    rpc FindProfileByUserId (FindProfileByUserIdRequest) returns (ProfileResponse);
+}
+
+message CreateProfileRequest {
+    string user_id = 1;
+    string bio = 2;
+    string location = 3;
+}
+
+message FindProfileByIdRequest {
+    string profile_id = 1;
+}
+message FindProfileByUserIdRequest {
+    string user_id = 1;
+}
+message ProfileResponse {
+    string profile_id = 1;
+    string user_id = 2;
+    string bio = 3;
+    string location = 4;
+}

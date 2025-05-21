@@ -12,9 +12,7 @@ async function bootstrap() {
       transport: Transport.GRPC,
       options: {
         package: USER_PACKAGE_NAME,
-        protoPath: join(
-          '/home/bcila/Documents/Projects/twitch-clone-microservices/proto/user.proto',
-        ),
+        protoPath: join(__dirname, './user.proto'),
         url: 'localhost:50051',
         onLoadPackageDefinition: (pkg, server) => {
           new ReflectionService(pkg).addToServer(server);

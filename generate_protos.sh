@@ -43,6 +43,12 @@ generate_ts_protos() {
         mkdir -p "./services/$1/types"
     fi
     
+    # Create proto folder and copy .proto file
+    if [ ! -d "./services/$1/proto" ]; then
+        mkdir -p "./services/$1/proto"
+    fi
+    cp "$PROTO_DIR/$2" "./services/$1/proto/$2"
+
     # Check if proto file exists
     if [ -f "$PROTO_DIR/$2" ]; then
         # Generate TS Protos if proto file exists
@@ -53,29 +59,38 @@ generate_ts_protos() {
     fi
 }
 
-generate_python_protos() {
-    if [ ! -d "./services/$1/pb" ]; then
-        mkdir -p "./services/$1/pb"
-    fi
+# generate_python_protos() {
+#     if [ ! -d "./services/$1/pb" ]; then
+#         mkdir -p "./services/$1/pb"
+#     fi
 
-    # Check if proto file exists
-    if [ -f "$PROTO_DIR/$2" ]; then
-        # Generate Python Protos if proto file exists
-        python -m grpc_tools.protoc \
-            -I $PROTO_DIR \
-            --python_out=./services/$1/pb \
-            --grpc_python_out=./services/$1/pb \
-            $PROTO_DIR/$2
-    else
-        echo "⚠️ Proto file for $1 not found. Skipping generation."
-    fi
-}
+#     # Create proto folder and copy .proto file
+#     if [ ! -d "./services/$1/proto" ]; then
+#         mkdir -p "./services/$1/proto"
+#     fi
+#     cp "$PROTO_DIR/$2" "./services/$1/proto/$2"
+
+#     # Check if proto file exists
+#     if [ -f "$PROTO_DIR/$2" ]; then
+#         # Generate Python Protos if proto file exists
+#         python -m grpc_tools.protoc \
+#             -I $PROTO_DIR \
+#             --python_out=./services/$1/pb \
+#             --grpc_python_out=./services/$1/pb \
+#             $PROTO_DIR/$2
+#     else
+#         echo "⚠️ Proto file for $1 not found. Skipping generation."
+#     fi
+# }
 
 generate_gateway_protos() {
     # Check if the types directory exists, if not create it
     if [ ! -d "./gateway/types" ]; then
         mkdir -p "./gateway/types"
     fi
+
+    mkdir -p ./gateway/proto
+    cp $PROTO_DIR/*.proto ./gateway/proto/
     
     # Check if any proto files exist in the proto directory
     if ls "$PROTO_DIR"/*.proto 1> /dev/null 2>&1; then

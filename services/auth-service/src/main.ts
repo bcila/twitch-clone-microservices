@@ -13,7 +13,7 @@ async function bootstrap() {
         package: 'auth',
         protoPath: join(
           // __dirname,
-          '/home/bcila/Documents/Projects/twitch-clone-microservices/proto/auth.proto',
+          '../proto/auth.proto',
         ),
         url: 'localhost:50052',
         onLoadPackageDefinition: (pkg, server) => {

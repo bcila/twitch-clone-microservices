@@ -28,33 +28,59 @@ export interface FindUserByUsernameRequest {
   username: string;
 }
 
-export interface UserRespose {
+export interface UserResponse {
   userId: string;
   username: string;
   email: string;
-  password: string;
+}
+
+export interface CreateProfileRequest {
+  userId: string;
+  bio: string;
+  location: string;
+}
+
+export interface FindProfileByIdRequest {
+  profileId: string;
+}
+
+export interface FindProfileByUserIdRequest {
+  userId: string;
+}
+
+export interface ProfileResponse {
+  profileId: string;
+  userId: string;
+  bio: string;
+  location: string;
 }
 
 export const USER_PACKAGE_NAME = "user";
 
+/** USER SERVICE */
+
 export interface UserServiceClient {
-  createUser(request: CreateUserRequest): Observable<UserRespose>;
+  createUser(request: CreateUserRequest): Observable<UserResponse>;
 
-  findUserById(request: FindUserByIdRequest): Observable<UserRespose>;
+  findUserById(request: FindUserByIdRequest): Observable<UserResponse>;
 
-  findUserByEmail(request: FindUserByEmailRequest): Observable<UserRespose>;
+  findUserByEmail(request: FindUserByEmailRequest): Observable<UserResponse>;
 
-  findUserByUsername(request: FindUserByUsernameRequest): Observable<UserRespose>;
+  findUserByUsername(request: FindUserByUsernameRequest): Observable<UserResponse>;
 }
 
+/** USER SERVICE */
+
 export interface UserServiceController {
-  createUser(request: CreateUserRequest): Promise<UserRespose> | Observable<UserRespose> | UserRespose;
+  createUser(request: CreateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
-  findUserById(request: FindUserByIdRequest): Promise<UserRespose> | Observable<UserRespose> | UserRespose;
+  findUserById(request: FindUserByIdRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
-  findUserByEmail(request: FindUserByEmailRequest): Promise<UserRespose> | Observable<UserRespose> | UserRespose;
+  findUserByEmail(request: FindUserByEmailRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
-  findUserByUsername(request: FindUserByUsernameRequest): Promise<UserRespose> | Observable<UserRespose> | UserRespose;
+  findUserByUsername(
+    request: FindUserByUsernameRequest,
+  ): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 }
 
 export function UserServiceControllerMethods() {
@@ -73,3 +99,46 @@ export function UserServiceControllerMethods() {
 }
 
 export const USER_SERVICE_NAME = "UserService";
+
+/** PROFILE SERVICE */
+
+export interface ProfileServiceClient {
+  createProfile(request: CreateProfileRequest): Observable<ProfileResponse>;
+
+  findProfileById(request: FindProfileByIdRequest): Observable<ProfileResponse>;
+
+  findProfileByUserId(request: FindProfileByUserIdRequest): Observable<ProfileResponse>;
+}
+
+/** PROFILE SERVICE */
+
+export interface ProfileServiceController {
+  createProfile(
+    request: CreateProfileRequest,
+  ): Promise<ProfileResponse> | Observable<ProfileResponse> | ProfileResponse;
+
+  findProfileById(
+    request: FindProfileByIdRequest,
+  ): Promise<ProfileResponse> | Observable<ProfileResponse> | ProfileResponse;
+
+  findProfileByUserId(
+    request: FindProfileByUserIdRequest,
+  ): Promise<ProfileResponse> | Observable<ProfileResponse> | ProfileResponse;
+}
+
+export function ProfileServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ["createProfile", "findProfileById", "findProfileByUserId"];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);
+    }
+  };
+}
+
+export const PROFILE_SERVICE_NAME = "ProfileService";
